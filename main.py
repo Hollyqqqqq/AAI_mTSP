@@ -5,8 +5,6 @@ import sys
 import time
 import os
 
-pbar = progressbar.ProgressBar()
-
 # Add Dustbins
 instance = sys.argv[1]
 with open(f'instances/{instance}.txt','r') as f:
@@ -20,6 +18,7 @@ runs = 1 if len(sys.argv) <= 2 else int(sys.argv[2])
 if not os.path.isdir(f'./{instance}'):
     os.mkdir(f'{instance}')
 for r in range(runs):
+    pbar = progressbar.ProgressBar()
     with open(f'{instance}/{r}.txt','w') as f:
         random.seed(seedValue)
         yaxis = [] # Fittest value (distance)
