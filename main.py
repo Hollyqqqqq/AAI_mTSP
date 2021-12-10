@@ -16,7 +16,7 @@ with open(f'instances/{instance}.txt','r') as f:
         [x, y] = lines[i].split(' ')[1:]
         RouteManager.addDustbin(Dustbin(float(x), float(y)))
 
-runs = 1 if len(sys.argv) <= 2 else sys.argv[2]
+runs = 1 if len(sys.argv) <= 2 else int(sys.argv[2])
 if not os.path.isdir(f'./{instance}'):
     os.mkdir(f'{instance}')
 for r in range(runs):
