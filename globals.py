@@ -15,7 +15,7 @@ mutationRate = 0.02
 tournamentSize = 10
 elitism = True
 # number of trucks
-numTrucks = 10
+numTrucks = 5
 
 def random_range(n, total):
     """Return a randomly chosen list of n positive integers summing to total.
@@ -37,3 +37,12 @@ def route_lengths():
         else:
                 a = random_range(numTrucks, upper)
     return a
+
+# change numNodes
+def set_numNodes(num):
+    global numNodes
+    numNodes = num
+
+# get numNodes
+def get_numNodes():
+    return numNodes

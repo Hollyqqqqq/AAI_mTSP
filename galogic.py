@@ -36,6 +36,7 @@ class GA:
     # Function to implement crossover operation
     @classmethod
     def crossover (cls, parent1, parent2):
+        numNodes = get_numNodes()
         child = Route()
         child.base.append(Dustbin(-1, -1)) # since size is (numNodes - 1) by default
         startPos = 0
