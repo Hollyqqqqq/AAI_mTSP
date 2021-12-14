@@ -1,6 +1,7 @@
 '''
 Collection of routes (chrmosomes)
 '''
+import numpy as np
 from route import *
 
 class Population:
@@ -9,6 +10,7 @@ class Population:
     def __init__ (self, populationSize, initialise):
         self.populationSize = populationSize
         if initialise:
+            self.routes.clear()
             for i in range(populationSize):
                 newRoute = Route() # Create empty route
                 newRoute.generateIndividual() # Add route sequences
