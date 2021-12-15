@@ -2,13 +2,16 @@
 The main helper class for Genetic Algorithm to perform
 crossover, mutation on populations to evolve them
 '''
+import numpy as np
 from population import *
+import warnings
+warnings.filterwarnings("ignore", category=Warning)
 
 class GA:
 
     @classmethod
     # Evolve pop
-    def evolvePopulation(cls, pop):
+    def evolvePopulation(cls, pop, method):
 
         newPopulation = Population(pop.populationSize, False)
 
@@ -19,12 +22,20 @@ class GA:
             elitismOffset = 1
 
         # Performs tournament selection followed by crossover to generate child
-        for i in range(elitismOffset, newPopulation.populationSize):
-            parent1 = cls.tournamentSelection(pop)
-            parent2 = cls.tournamentSelection(pop)
-            child = cls.crossover(parent1, parent2)
-            # Adds child to next generation
-            newPopulation.saveRoute(i, child)
+        if method == 'tcx':
+            for i in range(elitismOffset, newPopulation.populationSize):
+                parent1 = cls.tournamentSelection(pop)
+                parent2 = cls.tournamentSelection(pop)
+                child = cls.crossoverTCX(parent1, parent2)
+                # Adds child to next generation
+                newPopulation.saveRoute(i, child)
+        else:
+            for i in range(elitismOffset, newPopulation.populationSize):
+                parent1 = cls.tournamentSelection(pop)
+                parent2 = cls.tournamentSelection(pop)
+                child = cls.crossover(parent1, parent2)
+                # Adds child to next generation
+                newPopulation.saveRoute(i, child)
 
 
         # Performs Mutation
@@ -76,6 +87,49 @@ class GA:
                 child.route[i].append(child.base[k]) # add shuffled values for rest
                 k+=1
         return child
+    
+    # Function to implement TCX crossover operation
+    @classmethod
+    def crossoverTCX (cls, parent1, parent2):
+
+        child = Route()
+        for i in range(numTrucks):
+            child.route[i].append(RouteManager.getDustbin(0)) # add same first node for each route
+        
+
+        # cut some genes from parent1 to child
+        select_genes = []
+        for i in range(numTrucks):
+            routeLen = parent1.routeLengths[i]
+            if routeLen > 1:
+                cut1 = random.randint(1, routeLen-1)
+                cut2 = random.randint(cut1, routeLen)
+                cut_genes = parent1.route[i][cut1:cut2]
+                child.route[i].extend(cut_genes)
+                select_genes.extend(cut_genes)
+        
+
+        # add rest genes from parent2 to child
+        rest_genes = []
+        for i in range(numTrucks):
+            for j in range(parent2.routeLengths[i]-1):
+                if parent2.route[i][j+1] not in select_genes:
+                    rest_genes.append(parent2.route[i][j+1])
+
+        s_index = 0
+        for i in range(numTrucks-1):
+            e_index = random.randint(s_index, len(rest_genes))
+            child.route[i].extend(rest_genes[s_index:e_index])
+            s_index = e_index
+        child.route[i].extend(rest_genes[s_index:])
+
+        
+        # update child routeLengths
+        for i in range(numTrucks):
+            child.routeLengths[i] = len(child.route[i])
+        
+
+        return child
 
     # Mutation opeeration
     @classmethod
@@ -90,16 +144,22 @@ class GA:
         #generate replacement range for 1
         route1startPos = 0
         route1lastPos = 0
-        while route1startPos >= route1lastPos or route1startPos == 1:
-            route1startPos = random.randint(1, route.routeLengths[index1] - 1)
-            route1lastPos = random.randint(1, route.routeLengths[index1] - 1)
+        if route.routeLengths[index1] > 1:
+            route1startPos = random.randint(1, route.routeLengths[index1]-1)
+            route1lastPos = random.randint(route1startPos, route.routeLengths[index1]-1)
+        # while route1startPos >= route1lastPos or route1startPos == 1:
+        #     route1startPos = random.randint(1, route.routeLengths[index1] - 1)
+        #     route1lastPos = random.randint(1, route.routeLengths[index1] - 1)
 
         #generate replacement range for 2
         route2startPos = 0
         route2lastPos = 0
-        while route2startPos >= route2lastPos or route2startPos == 1:
-            route2startPos = random.randint(1, route.routeLengths[index2] - 1)
-            route2lastPos= random.randint(1, route.routeLengths[index2] - 1)
+        if route.routeLengths[index2] > 1:
+            route2startPos = random.randint(1, route.routeLengths[index2]-1)
+            route2lastPos = random.randint(route2startPos, route.routeLengths[index2]-1)
+        # while route2startPos >= route2lastPos or route2startPos == 1:
+        #     route2startPos = random.randint(1, route.routeLengths[index2] - 1)
+        #     route2lastPos= random.randint(1, route.routeLengths[index2] - 1)
 
         #print ('startPos, lastPos: ' + str(route1startPos) + ',' + str(route1lastPos) + ',' + str(route2startPos) + ',' + str(route2lastPos))
         swap1 = [] # values from 1
