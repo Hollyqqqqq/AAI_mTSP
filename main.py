@@ -21,6 +21,7 @@ with open(f'instances/{instance}.txt','r') as f:
 
 
 min_dis_list = []
+cpu_time_list = []
 for r in range(runs):
 
     print(f'runs {r}')
@@ -51,6 +52,7 @@ for r in range(runs):
     min_dis_list.append(min_dis)
     route_str = globalRoute.toString()
     cpu_time = end - start
+    cpu_time_list.append(cpu_time)
     print ('Initial minimum distance: ' + str(init_dis))
     print ('Global minimum distance: ' + str(min_dis))
     print ('Final Route: ' + route_str, end='')
@@ -74,3 +76,13 @@ for r in range(runs):
 with open(f'{method}/min_dis_{instance}.txt','w') as f:
     for d in min_dis_list:
         f.write(f'{d}\n')
+
+print(f'best solution for {r} runs: {min(min_dis_list)}')
+print(f'worst solution for {r} runs: {max(min_dis_list)}')
+print(f'average solution for {r} runs: {sum(min_dis_list)/len(min_dis_list)}')
+print(f'average cpu time for {r} runs: {sum(cpu_time_list)/len(cpu_time_list)}')
+with open(f'{method}/stat_{instance}.txt','w') as f:
+    f.write(f'{min(min_dis_list)}\n')
+    f.write(f'{max(min_dis_list)}\n')
+    f.write(f'{sum(min_dis_list)/len(min_dis_list)}\n')
+    f.write(f'{sum(cpu_time_list)/len(cpu_time_list)}\n')
