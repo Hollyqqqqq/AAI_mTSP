@@ -57,10 +57,10 @@ for r in range(runs):
     print (f'CPU Time cost: {cpu_time}s')
 
 
-    if not os.path.isdir(f'_{instance}/{r}'):
-        os.makedirs(f'_{instance}/{r}')
+    if not os.path.isdir(f'{instance}/{r}'):
+        os.makedirs(f'{instance}/{r}')
 
-    with open(f'_{instance}/{r}/output.txt','w') as f:
+    with open(f'{instance}/{r}/output.txt','w') as f:
         f.write(f'{init_dis}\n')
         f.write(f'{min_dis}\n')
         f.write(route_str)
@@ -68,10 +68,10 @@ for r in range(runs):
 
     fig = plt.figure()
     plt.plot(xaxis, yaxis, 'r-')
-    plt.savefig(f'_{instance}/{r}/evolution.jpg')
+    plt.savefig(f'{instance}/{r}/evolution.jpg')
     # plt.show()
     
-with open(f'_{instance}_min_dis.txt','w') as f:
+with open(f'min_dis_{instance}.txt','w') as f:
     for d in min_dis_list:
         f.write(f'{d}\n')
 
@@ -79,7 +79,7 @@ print(f'best solution for {r} runs: {min(min_dis_list)}')
 print(f'worst solution for {r} runs: {max(min_dis_list)}')
 print(f'average solution for {r} runs: {sum(min_dis_list)/len(min_dis_list)}')
 print(f'average cpu time for {r} runs: {sum(cpu_time_list)/len(cpu_time_list)}')
-with open(f'_{instance}_stat.txt','w') as f:
+with open(f'stat_{instance}.txt','w') as f:
     f.write(f'{min(min_dis_list)}\n')
     f.write(f'{max(min_dis_list)}\n')
     f.write(f'{sum(min_dis_list)/len(min_dis_list)}\n')
