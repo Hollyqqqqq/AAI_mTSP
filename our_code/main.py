@@ -4,6 +4,7 @@ import progressbar
 import sys
 import time
 import os
+import numpy as np
 
 # read console input
 instance = sys.argv[1]
@@ -87,3 +88,4 @@ with open(f'stat_{instance}.txt','w') as f:
     f.write(f'{max(min_dis_list)}\n')
     f.write(f'{sum(min_dis_list)/len(min_dis_list)}\n')
     f.write(f'{sum(cpu_time_list)/len(cpu_time_list)}\n')
+    f.write(f'{np.std(min_dis_list)}')
