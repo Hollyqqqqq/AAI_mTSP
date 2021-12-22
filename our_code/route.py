@@ -25,7 +25,9 @@ class Route:
 
     def generateIndividual (self):
         k=0
-        dustbins = DustbinManager.getAllDustbins()[1:]
+        dustbins = []
+        dustbins.extend(DustbinManager.getAllDustbins()[1:])
+        random.shuffle(dustbins)
         for i in range(numTrucks):
             self.route[i].append(DustbinManager.getDustbin(0)) # add same first node for each route
             for j in range(self.routeLengths[i]-1):

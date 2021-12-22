@@ -10,6 +10,10 @@ import numpy as np
 instance = sys.argv[1]
 runs = 1 if len(sys.argv) <= 2 else int(sys.argv[2])
 
+fappend = ''
+if KMeansSize == 0:
+    fappend = '_'
+
 
 # read data and add dustbins
 with open(f'instances/{instance}.txt','r') as f:
@@ -61,10 +65,10 @@ for r in range(runs):
     print (f'CPU Time cost: {cpu_time}s')
 
 
-    if not os.path.isdir(f'{instance}/{r}'):
-        os.makedirs(f'{instance}/{r}')
+    if not os.path.isdir(f'{instance}{fappend}/{r}'):
+        os.makedirs(f'{instance}{fappend}/{r}')
 
-    with open(f'{instance}/{r}/output.txt','w') as f:
+    with open(f'{instance}{fappend}/{r}/output.txt','w') as f:
         f.write(f'{init_dis}\n')
         f.write(f'{global_dis}\n')
         f.write(route_str)
@@ -72,10 +76,10 @@ for r in range(runs):
 
     fig = plt.figure()
     plt.plot(xaxis, yaxis, 'r-')
-    plt.savefig(f'{instance}/{r}/evolution.jpg')
+    plt.savefig(f'{instance}{fappend}/{r}/evolution.jpg')
     # plt.show()
     
-with open(f'min_dis_{instance}.txt','w') as f:
+with open(f'min_dis_{instance}{fappend}.txt','w') as f:
     for d in min_dis_list:
         f.write(f'{d}\n')
 
@@ -83,7 +87,7 @@ print(f'best solution for {r} runs: {min(min_dis_list)}')
 print(f'worst solution for {r} runs: {max(min_dis_list)}')
 print(f'average solution for {r} runs: {sum(min_dis_list)/len(min_dis_list)}')
 print(f'average cpu time for {r} runs: {sum(cpu_time_list)/len(cpu_time_list)}')
-with open(f'stat_{instance}.txt','w') as f:
+with open(f'stat_{instance}{fappend}.txt','w') as f:
     f.write(f'{min(min_dis_list)}\n')
     f.write(f'{max(min_dis_list)}\n')
     f.write(f'{sum(min_dis_list)/len(min_dis_list)}\n')

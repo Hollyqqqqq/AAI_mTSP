@@ -89,7 +89,7 @@ class GA:
         if random.uniform(0, 1) <= crossMutateRate:
             cls.mutate_crossRoute(route)
         else:
-            cls.mutate_innerRoute(route)
+            cls.interior_mutate(route)
 
 
     @classmethod
@@ -134,22 +134,32 @@ class GA:
         route.routeLengths[index2] = len(route.route[index2])
 
     @classmethod
-    def mutate_innerRoute(cls, route):
+    # modified
+    # mutate in one salesman's route by swapping two part in the route
+    def interior_mutate(cls, route):
+        # select a salesman randomly for mutation
         index = random.randint(0, numTrucks - 1)
-        while route.routeLengths[index] <= 4:
+        while len(route.route[index]) < 3:#the length of the route must be at least 3
             index = random.randint(0, numTrucks - 1)
-        pos = random.sample(range(1, route.routeLengths[index]), 4)
-        pos.sort()
-        newSubRoute = []
-        newSubRoute.extend(route.route[index][:pos[0]])
-        newSubRoute.extend(route.route[index][pos[2]:pos[3]])
-        newSubRoute.extend(route.route[index][pos[1]:pos[2]])
-        newSubRoute.extend(route.route[index][pos[0]:pos[1]])
-        newSubRoute.extend(route.route[index][pos[3]:])
-        route.route[index] = newSubRoute
-        
+        # print ('Indexes selected: ' + str(index))
 
-        
+        cut_point = random.sample(range(1, len(route.route[index])), 2)
+        cut_point.sort()
+
+        cut_point += random.sample(range(cut_point[0], cut_point[1]), 1)
+        cut_point += random.sample(range(cut_point[1], len(route.route[index])), 1)
+
+        swap1 = []  # cut_point[0]~cut_point[2]
+        swap2 = []  # cut_point[1]~cut_point[3]
+
+        for i in range(cut_point[1], cut_point[3] + 1):
+            swap2.append(route.route[index].pop(cut_point[1]))
+
+        for i in range(cut_point[0], cut_point[2] + 1):
+            swap1.append(route.route[index].pop(cut_point[0]))
+
+        route.route[index][cut_point[1] - len(swap1):cut_point[1] - len(swap1)] = swap1
+        route.route[index][cut_point[0]:cut_point[0]] = swap2
 
 
     # Tournament Selection: choose a random set of chromosomes and find the fittest among them 
